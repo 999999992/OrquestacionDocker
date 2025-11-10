@@ -1,4 +1,4 @@
-# OrquestacionDocker
+# Orquestacion con Docker
 
 Conexion a la Base de Datos: Una aplicacion Node.JS que usa la libreria mysql2 para obtener los parametros de la
 conexión a traves de variables de entorno que son inyectadas por Docker Compose
