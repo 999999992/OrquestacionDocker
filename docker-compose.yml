@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./app 
+    ports:
+      - "3000:3000"
+    container_name: node_express_app
+
+    volumes:
+      - /app/node_modules # Mantiene las dependencias (Express, mysql2)
+
+    environment:
+      DB_HOST: mysqldb # El nombre del servicio de MySQL
+      DB_USER: root
+      DB_PASSWORD: HZ+*O2Z4.caL&-F8(^TQZ 
+      DB_NAME: dockerdb
+    
+    # ESTA SECCIÓN ES LA CLAVE:
+    depends_on:
+      mysqldb:
+        condition: service_healthy # Esperar a que el healthcheck de MySQL sea exitoso
+
+  mysqldb:
+    image: mysql/mysql-server:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: HZ+*O2Z4.caL&-F8(^TQZ
+      MYSQL_DATABASE: dockerdb
+      # Esto asegura compatibilidad con Node.js
+      MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      
+    # HEALTHCHECK: Esto define cuándo el servicio está "healthy"
+   
+    healthcheck:
+      test: ["CMD", "mysql", "--user=root", "--password=HZ+*O2Z4.caL&-F8(^TQZ", "--execute", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s # Darle tiempo para que se inicie
+
+volumes:
+  mysql-data:
+  
